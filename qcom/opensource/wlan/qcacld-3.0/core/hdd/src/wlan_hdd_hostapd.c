@@ -439,9 +439,8 @@ static void hdd_hostapd_channel_prevent_suspend(struct hdd_adapter *adapter,
 		  atomic_read(&hdd_ctx->sap_dfs_ref_cnt),
 		  sap_ctx->is_dfs_wakelock_held);
 
-	/* Return if BSS is already started && wakelock is acquired */
-	if (hostapd_state->bss_state == BSS_START &&
-	    (atomic_read(&hdd_ctx->sap_dfs_ref_cnt) >= 1))
+	/* Each SAP session must own one reference, even if another SAP holds it. */
+	if (sap_ctx->is_dfs_wakelock_held)
 		return;
 
 	is_dfs = wlan_mlme_check_chan_param_has_dfs(hdd_ctx->pdev,
