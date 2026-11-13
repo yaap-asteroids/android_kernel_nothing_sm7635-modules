@@ -503,7 +503,8 @@ static ssize_t fts_pocket_mode_store(
         return -EFAULT;
     if (kstrtouint(buf, 0, &tmp))
         return -EINVAL;
-    if ((!ts_data->gesture_support) && (!ts_data->single_tap_enabled) && (ts_data->fod_mode == FTS_FOD_DISABLE)) {
+    if (ts_data->suspended && !ts_data->gesture_support &&
+        !ts_data->single_tap_enabled && ts_data->fod_mode == FTS_FOD_DISABLE) {
         FTS_INFO("In sleep mode,not operation pocket mode!");
         return count;
     }
